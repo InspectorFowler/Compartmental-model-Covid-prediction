@@ -27,6 +27,16 @@ setwd('C:/Users/Parikshit_verma/Documents/GitHub/Covid-19/')
 
 source('Functions/seir_simulate.R')
 
+hline <- function(y = 0.5, color = "red"){
+  list(type = "line", 
+       x0 = 0, 
+       x1 = 1, 
+       xref = "paper",
+       y0 = y, 
+       y1 = y, 
+       line = list(color = color))
+}
+
 ######################################################################################
 # Read data
 ######################################################################################
@@ -93,7 +103,7 @@ for (i in 1:nrow(covid_us_st)){
   
   simulated<-seir_simulate(init,param,horizon) %>%
              dplyr::select(c('t','I')) %>%
-             mutate(I = round(I*pop,0),
+             mutate(I = round(I,4),
                     State = state,
                     Day = day) %>%
              dplyr::select(c('State','Day','t','I')) %>%
@@ -109,11 +119,61 @@ for (i in 1:nrow(covid_us_st)){
 rm(init,param,day,state,pop,simulated,horizon,i,
    covid_init,covid_us_st,start_filter)
 
+filter_sim <- covid_sim %>% 
+              group_by(State,Day) %>% 
+              summarise(max_inf = max(Infected)) %>% 
+              filter(max_inf > 0) %>% 
+              mutate(Dummy = 1)
+
+covid_sim <- covid_sim %>%
+             left_join(.,filter_sim, by = c('State' = 'State',
+                                            'Day' = 'Day')) %>%
+             filter(!is.na(Dummy)) %>%
+             dplyr::select(-c('Dummy','max_inf'))
+
 ######################################################################################
 # Visualization
 ######################################################################################
 
-plot<-covid_sim %>%
-      filter(State == 'Washington' & Day == 23) %>% View()
-      plot_ly(x = ~Sim_Day,
-              y = ~Infected)
+# ------------------------------ Animate -------------------------------------
+
+state = 'Texas'
+
+covid_sim %>%
+filter(State == state) %>%
+plot_ly(x = ~Sim_Day,
+        y = ~Infected,
+        frame = ~Day,
+        type = 'scatter',
+        mode = 'lines',
+        fill = 'tozeroy') %>% 
+layout(title = paste0('Covid Curve Progression : ', state),
+       showlegend = FALSE,
+       xaxis = list(title = 'Days'), 
+       yaxis = list(title = 'Population Percentage',
+                    range = c(0,0.8),
+                    tickformat = "%"),
+       shapes = list(hline()))
+
+# ------------------------------ States -------------------------------------
+
+covid_sim %>%
+left_join(.,covid_sim %>% 
+            group_by(State) %>% 
+            summarise(max_day = max(Day)) %>% 
+            mutate(Dummy = 1), by = c('State' = 'State',
+                                      'Day' = 'max_day')) %>%
+filter(!is.na(Dummy)) %>%
+dplyr::select(-c('Dummy')) %>%
+plot_ly(x = ~Sim_Day,
+        y = ~Infected,
+        color = ~State,
+        type = 'scatter',
+        mode = 'lines',
+        fill = 'tozeroy') %>% 
+layout(title = 'Covid Curve Progression by State',
+       xaxis = list(title = 'Days'), 
+       yaxis = list(title = 'Population %',
+                    range = c(0,0.8),
+                    tickformat = "%"),
+       shapes = list(hline()))
