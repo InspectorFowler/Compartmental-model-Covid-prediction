@@ -35,7 +35,7 @@ covid_us_st<-read.csv('Output/Estimation/US_state_Covid19_output.csv',
                       stringsAsFactors = FALSE)
 
 ######################################################################################
-# Data wrangling
+# SEIR Simulate
 ######################################################################################
 
 covid_init <- covid_us_st %>%
@@ -53,7 +53,16 @@ covid_us_st<-covid_us_st %>%
              filter(Day >= 8) %>%
              dplyr::select(c('State','Day','Beta'))
 
+start_filter<-covid_us_st %>%
+              filter(Beta > 0.1) %>%
+              dplyr::select(c('State','Day')) %>%
+              mutate(Dummy = 1)
 
+covid_us_st<-covid_us_st %>%
+             left_join(.,start_filter, by =c('State' = 'State',
+                                             'Day' = 'Day')) %>%
+             filter(!is.na(Dummy)) %>%
+             dplyr::select(-c('Dummy'))
 
 # Initial state values 
 init = rep(0,4)
@@ -72,18 +81,39 @@ param[2] = 1/3
 param[3] = 1/5.2 
 param[4] = 1/10 
 
-horizon = 200
+horizon = 365
 
 for (i in 1:nrow(covid_us_st)){
   
+  day<-covid_us_st$Day[i]
   state<-covid_us_st$State[i]
+  pop<-covid_init$Population[covid_init$State == state]
   param[2]<-covid_us_st$Beta[i]
   init[2]<-covid_init$Init[covid_init$State == state]
   
-  simulated<-seir_simulate(init,param,horizon)
+  simulated<-seir_simulate(init,param,horizon) %>%
+             dplyr::select(c('t','I')) %>%
+             mutate(I = round(I*pop,0),
+                    State = state,
+                    Day = day) %>%
+             dplyr::select(c('State','Day','t','I')) %>%
+             setNames(c('State','Day','Sim_Day','Infected'))
   
+  if(i == 1){
+    covid_sim<-simulated
+  }else{
+    covid_sim<-rbind(covid_sim,simulated)
+  }
 }
 
+rm(init,param,day,state,pop,simulated,horizon,i,
+   covid_init,covid_us_st,start_filter)
 
+######################################################################################
+# Visualization
+######################################################################################
 
-
+plot<-covid_sim %>%
+      filter(State == 'Washington' & Day == 23) %>% View()
+      plot_ly(x = ~Sim_Day,
+              y = ~Infected)
