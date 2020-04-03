@@ -21,7 +21,7 @@ options(scipen=999)
 #Working directory and environment
 ######################################################################################
 
-setwd('C:/Users/Parikshit_verma/Desktop/Covid-19')
+setwd('C:/Users/Parikshit_verma/Documents/GitHub/Covid-19/')
 
 ######################################################################################
 # Functions
@@ -130,7 +130,7 @@ covid_us_cn <- left_join(covid_us_cn,(covid_us_cn %>% group_by(County,State) %>%
                       Death_Percent = round(Death/Population,8))
 
 ######################################################################################
-# Parameter estimation
+# Parameter estimation - Approximate bayesian calculation (ABC)
 ######################################################################################
 
 for (k in 1:3){
