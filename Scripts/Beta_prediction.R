@@ -89,7 +89,7 @@ accuracy_check <- function(model,init,train_data,test_data){
 # Read data
 ######################################################################################
 
-covid_us_st<-read.csv('Output/Estimation/US_state_Covid19_output.csv',stringsAsFactors = FALSE)
+covid_us_st<-read.csv('Output/Estimation/US_state_beta.csv',stringsAsFactors = FALSE)
 
 pop<-read.csv('Input/Population/US_state_population.csv',stringsAsFactors = FALSE) %>%
      dplyr::select(c('NAME','POPESTIMATE2019')) %>%
