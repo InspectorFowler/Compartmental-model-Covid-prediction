@@ -33,101 +33,130 @@ source('Functions/seir_simulate.R')
 # Read data
 ######################################################################################
 
-covid<-read.csv('Input/Cases/Covid19_global.csv',stringsAsFactors = FALSE)
+# ---------------------------- Population --------------------------------------------
 
 wpop<-read.csv('Input/Population/World_population.csv',stringsAsFactors = FALSE) %>%
-      setNames(c('Country','Population')) %>%
-      mutate(Country = tolower(Country),
-             Country = case_when(Country %like% 'iran' ~ 'iran',
-                                 Country %like% 'egypt' ~ 'egypt',
-                                 Country == 'korea, rep.' ~ 'korea, south',
-                                 Country %like% 'russia' ~ 'russia',
-                                 Country %like% 'syria' ~ 'syria',
-                                 Country == 'united states' ~ 'us',
-                                 TRUE ~ Country))
+      setNames(c('country','population')) %>%
+      mutate(country = case_when(country %like% 'Iran' ~ 'Iran',
+                                 country %like% 'Egypt' ~ 'Egypt',
+                                 country == 'Korea, Rep.' ~ 'Korea, South',
+                                 country %like% 'Russia' ~ 'Russia',
+                                 country %like% 'Syria' ~ 'Syria',
+                                 country == 'United States' ~ 'US',
+                                 TRUE ~ country))
 
-cpop<-read.csv('Input/Population/China_population.csv',stringsAsFactors = FALSE) %>%
-      setNames(c('Region','Population')) %>%
-      mutate(Region = paste0('china_',tolower(Region)))
+# ---------------------------- US Data --------------------------------------------
 
-covid_us_st<-read.csv('Input/Cases/Covid19_US_states.csv',stringsAsFactors = FALSE) %>%
-             mutate(Population = as.numeric(Population),
-                    date = as.Date(date, format = "%m/%d/%Y"))
+covid_us_cases<-read.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv', 
+                         stringsAsFactors = FALSE) %>%
+                dplyr::select(-c('UID','iso2','iso3','code3','FIPS','Country_Region','Lat','Long_','Combined_Key')) %>%
+                dplyr::rename(county = Admin2,
+                              state = Province_State) %>%
+                filter(county != '') %>%
+                gather(.,date,cases,-c(county,state)) %>%
+                mutate(date = as.Date(gsub('X','',date), format = "%m.%d.%y"))
 
-covid_us_cn<-read.csv('Input/Cases/Covid19_US_counties.csv',stringsAsFactors = FALSE) %>%
-             mutate(Population = as.numeric(Population),
-                    date = as.Date(date, format = "%m/%d/%Y"))
+covid_us_death<-read.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv', 
+                         stringsAsFactors = FALSE) %>%
+                dplyr::select(-c('UID','iso2','iso3','code3','FIPS','Country_Region','Lat','Long_','Combined_Key')) %>%
+                dplyr::rename(county = Admin2,
+                              state = Province_State,
+                              population = Population) %>%
+                filter(county != '') %>%
+                gather(.,date,deaths,-c(county,state,population)) %>%
+                mutate(date = as.Date(gsub('X','',date), format = "%m.%d.%y"))
+
+covid_us_cn<-covid_us_cases %>%
+             left_join(.,covid_us_death, by = c('county' = 'county',
+                                                'state' = 'state',
+                                                'date' = 'date')) %>%
+             dplyr::select(c('date','state','county','cases','deaths','population')) %>%
+             setNames(c('Date','State','County','Cases','Death','Population'))
+
+rm(covid_us_cases,covid_us_death)
+
+covid_us_st<-covid_us_cn %>%
+             group_by(Date,State) %>%
+             summarise(Cases = sum(Cases, na.rm = TRUE),
+                       Death = sum(Death, na.rm = TRUE),
+                       Population = max(Population, na.rm = TRUE)) %>%
+             as.data.frame() 
+             
+# ---------------------------- Global Data --------------------------------------------
+
+covid_cases<-read.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', 
+                         stringsAsFactors = FALSE) %>%
+             dplyr::select(-c('Lat','Long','Province.State')) %>%
+             dplyr::rename(country = Country.Region) %>%
+             gather(.,date,cases,-c(country)) %>%
+             mutate(date = as.Date(gsub('X','',date), format = "%m.%d.%y")) %>%
+             group_by(country,date) %>%
+             summarise(cases = sum(cases,na.rm = TRUE)) %>%
+             as.data.frame()
+
+covid_death<-read.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv', 
+                      stringsAsFactors = FALSE) %>%
+             dplyr::select(-c('Lat','Long','Province.State')) %>%
+             dplyr::rename(country = Country.Region) %>%
+             gather(.,date,deaths,-c(country)) %>%
+             mutate(date = as.Date(gsub('X','',date), format = "%m.%d.%y")) %>%
+             group_by(country,date) %>%
+             summarise(deaths = sum(deaths,na.rm = TRUE)) %>%
+             as.data.frame()
+
+covid<-covid_cases %>%
+       left_join(.,covid_death, by = c('country' = 'country',
+                                       'date' = 'date')) %>%
+       left_join(.,wpop, by = c('country' = 'country')) %>%
+       filter(!is.na(population)) %>%
+       dplyr::select(c('date','country','cases','deaths','population')) %>%
+       setNames(c('Date','Country','Cases','Death','Population'))
+        
+rm(covid_cases, covid_death, wpop)
 
 ######################################################################################
 # Data wrangling
 ######################################################################################
 
-# ---------------------------- GLOBAL -----------------------------------------------
+# ---------------------------- Global -----------------------------------------------
 
-covid <- covid %>%
-         dplyr::select(c('Date','Country.Region','Province.State','Confirmed','Recovered','Deaths')) %>%
-         setNames(c('Date','Country','Region','Cases','Recovered','Death')) %>%
-         mutate(Date = as.Date(Date),
-                Country = tolower(Country),
-                Region = tolower(Region))
+covid<-covid %>% filter(Cases != 0 & Death != 0) 
 
-w_covid <- covid %>%
-           filter(Country != 'china') %>%
-           group_by(Date,Country) %>%
-           summarise(Cases = sum(Cases,na.rm = TRUE),
-                     Recovered = sum(Recovered,na.rm = TRUE),
-                     Death = sum(Death,na.rm = TRUE)) %>%
-           as.data.frame() %>%
-           left_join(.,wpop,by=c('Country' = 'Country')) %>%
-           filter(!is.na(Population))
+covid<-left_join(covid,(covid %>% group_by(Country) %>% summarize(start_date = min(Date, na.rm = TRUE))),
+                 by = c('Country' = 'Country')) %>%
+       mutate(Day = as.numeric(Date - start_date)) %>%
+       dplyr::select(c('Date','Day','Country',
+                       'Cases','Death','Population')) %>%
+       as.data.frame() %>%
+       mutate(Cases_Percent = round(Cases/Population,8),
+              Death_Percent = round(Death/Population,8)) 
 
-c_covid <- covid %>%
-           filter(Country == 'china') %>%
-           mutate(Country = paste0(Country,"_",Region)) %>%
-           dplyr::select(-c('Region')) %>%
-           left_join(.,cpop,by=c('Country' = 'Region')) %>%
-           filter(!is.na(Population))
+# ------------------------------- US ------------------------------------------------
 
-covid <- rbind(w_covid,c_covid) %>%
-         arrange(Country,Date) %>%
-         filter(Cases != 0)
+covid_us_st<-covid_us_st %>% filter(Cases != 0 & Death != 0) 
 
-covid <- left_join(covid,(covid %>% group_by(Country) %>% summarize(start_date = min(Date, na.rm = TRUE))),
-                   by = c('Country' = 'Country')) %>%
-         mutate(Day = as.numeric(Date - start_date)) %>%
-         dplyr::select(c('Date','Day','Country',
-                         'Cases','Recovered','Death','Population')) %>%
-         as.data.frame() %>%
-         mutate(Cases_Percent = round(Cases/Population,8),
-                Recovered_Percent = round(Recovered/Population,8),
-                Death_Percent = round(Death/Population,8)) 
+covid_us_st<-left_join(covid_us_st,(covid_us_st %>% group_by(State) %>% summarize(start_date = min(Date, na.rm = TRUE))),
+                 by = c('State' = 'State')) %>%
+             mutate(Day = as.numeric(Date - start_date)) %>%
+             dplyr::select(c('Date','Day','State',
+                             'Cases','Death','Population')) %>%
+             as.data.frame() %>%
+             mutate(Cases_Percent = round(Cases/Population,8),
+                    Death_Percent = round(Death/Population,8)) %>%
+             arrange(State,Day)
 
-rm(c_covid,w_covid,cpop,wpop)
+covid_us_cn<-covid_us_cn %>% filter(Cases != 0 & Death != 0) 
 
-# ------------------------------- United States --------------------------------------
-
-covid_us_st <- covid_us_st %>%
-               filter(!is.na(Population)) %>%
-               setNames(c('Date','State','Cases','Death','Population'))
-
-covid_us_st <- left_join(covid_us_st,(covid_us_st %>% group_by(State) %>% summarize(start_date = min(Date, na.rm = TRUE))),
-                          by = c('State' = 'State')) %>%
-               mutate(Day = as.numeric(Date - start_date)) %>%
-               dplyr::select(c('Date','Day','State','Cases','Death','Population')) %>%
-               mutate(Cases_Percent = round(Cases/Population,8),
-                      Death_Percent = round(Death/Population,8))
-
-covid_us_cn <- covid_us_cn %>%
-               filter(!is.na(Population)) %>%
-               setNames(c('Date','County','State','Cases','Death','Population'))
-
-covid_us_cn <- left_join(covid_us_cn,(covid_us_cn %>% group_by(County,State) %>% summarize(start_date = min(Date, na.rm = TRUE))),
-                         by = c('State' = 'State','County' = 'County')) %>%
-               mutate(Day = as.numeric(Date - start_date),
-                      County_state = paste0(County,'_',State)) %>%
-               dplyr::select(c('Date','Day','County_state','Cases','Death','Population')) %>%
-               mutate(Cases_Percent = round(Cases/Population,8),
-                      Death_Percent = round(Death/Population,8))
+covid_us_cn<-left_join(covid_us_cn,(covid_us_cn %>% group_by(State,County) %>% summarize(start_date = min(Date, na.rm = TRUE))),
+                       by = c('State' = 'State',
+                              'County' = 'County')) %>%
+             mutate(Day = as.numeric(Date - start_date)) %>%
+             dplyr::select(c('Date','Day','State','County',
+                             'Cases','Death','Population')) %>%
+             as.data.frame() %>%
+             mutate(Cases_Percent = round(Cases/Population,8),
+                    Death_Percent = round(Death/Population,8)) %>%
+             arrange(State,County,Day)
 
 ######################################################################################
 # Parameter estimation - Approximate bayesian calculation (ABC)

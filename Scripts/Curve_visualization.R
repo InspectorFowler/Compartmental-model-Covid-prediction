@@ -117,7 +117,7 @@ for (i in 1:nrow(covid_us_st)){
 }
 
 rm(init,param,day,state,pop,simulated,horizon,i,
-   covid_init,covid_us_st,start_filter)
+   covid_init,start_filter)
 
 filter_sim <- covid_sim %>% 
               group_by(State,Day) %>% 
