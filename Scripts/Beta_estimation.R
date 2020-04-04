@@ -158,38 +158,44 @@ covid_us_cn<-left_join(covid_us_cn,(covid_us_cn %>% group_by(State,County) %>% s
                     Death_Percent = round(Death/Population,8)) %>%
              arrange(State,County,Day)
 
+write.csv(covid,'Input/Covid/Global.csv',row.names = FALSE)
+write.csv(covid_us_cn,'Input/Covid/US_county.csv',row.names = FALSE)
+write.csv(covid_us_st,'Input/Covid/US_state.csv',row.names = FALSE)
+
 ######################################################################################
 # Parameter estimation - Approximate bayesian calculation (ABC)
 ######################################################################################
 
-for (k in 1:3){
+for (k in 1:2){
   
   if(k == 1){
     
+    # filter to only top 50 countries by cases
+    select<-covid %>% 
+            group_by(Country) %>% 
+            summarise(max_cases = max(Cases, na.rm = TRUE)) %>% 
+            arrange(desc(max_cases)) %>% 
+            dplyr::slice(1:50) %>% 
+            distinct(Country) %>% 
+            unlist()
+    
     covid_data<-covid %>%
+                filter(Country %in% select) %>%
                 mutate(State = Country) %>%
                 dplyr::select(c("Date","Day","State","Cases","Death",
                                 "Population","Cases_Percent","Death_Percent"))
     
     covid_data<-covid_data %>% filter(State %in% unique(covid_data$State))
-  }else if(k == 2){
+  }else{
     
     covid_data <- covid_us_st%>%
                   dplyr::select(c("Date","Day","State","Cases","Death",
                                   "Population","Cases_Percent","Death_Percent"))
     
     covid_data<-covid_data %>% filter(State %in% unique(covid_data$State))
-  }else{
-    
-    covid_data<-covid_us_cn %>%
-                mutate(State = County_state) %>%
-                dplyr::select(c("Date","Day","State","Cases","Death",
-                                "Population","Cases_Percent","Death_Percent"))
-    
-    covid_data<-covid_data %>% filter(State %in% unique(covid_data$State))
   }
   
-  if (k !=2) next
+  if (k !=1) next
   
   states <- covid_data %>% distinct(State) %>% unlist()
   
@@ -298,29 +304,21 @@ for (k in 1:3){
            mutate(Country = State) %>%
            dplyr::select(c("Date","Day","Country","Cases","Death",
                            "Population","Cases_Percent","Death_Percent",'Beta'))
-  }else if(k == 2){
-    
-    covid_us_st<-covid_data
   }else{
     
-    covid_us_cn <- covid_data %>%
-                   mutate(County_state = State) %>%
-                   dplyr::select(c("Date","Day","County_state","Cases","Death",
-                                   "Population","Cases_Percent","Death_Percent",'Beta'))
+    covid_us_st<-covid_data
   }
   
 }
 
-rm(cal_data,seir,simulated,actual,
+rm(cal_data,seir,simulated,actual,select,
    sub_covid,beta_pool,i,j,k,states,
+   sim_infected,sim_recovered,
    days,param,init,beta,covid_data,covid_data_updt)
 
 ######################################################################################
 # Write to file
 ######################################################################################
 
-write.csv(covid,'Output/Estimation/Global_Covid19_output.csv',row.names = FALSE)
-write.csv(covid_us_st,'Output/Estimation/US_state_Covid19_output.csv',row.names = FALSE)
-write.csv(covid_us_cn,'Output/Estimation/US_county_Covid19_output.csv',row.names = FALSE)
-
-
+write.csv(covid,'Output/Estimation/Global_beta.csv',row.names = FALSE)
+write.csv(covid_us_st,'Output/Estimation/US_state_beta.csv',row.names = FALSE)

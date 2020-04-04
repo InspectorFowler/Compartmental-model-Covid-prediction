@@ -41,95 +41,108 @@ hline <- function(y = 0.5, color = "red"){
 # Read data
 ######################################################################################
 
-covid_us_st<-read.csv('Output/Estimation/US_state_Covid19_output.csv',
-                      stringsAsFactors = FALSE)
+covid_us_st<-read.csv('Output/Estimation/US_state_beta.csv',stringsAsFactors = FALSE)
+covid<-read.csv('Output/Estimation/Global_beta.csv',stringsAsFactors = FALSE)
 
 ######################################################################################
 # SEIR Simulate
 ######################################################################################
 
-covid_init <- covid_us_st %>%
-              filter(Day == 1) %>%
-              mutate(Init = 2.4*Cases_Percent) %>%
-              dplyr::select(c('State','Init','Population'))
-
-covid_us_st<-covid_us_st %>%
-             filter(State %in% (covid_us_st %>% 
-                                group_by(State) %>%
-                                summarise(n = n()) %>%
-                                filter(n >= 25) %>%
-                                dplyr::select(c('State')) %>%
-                                unlist())) %>%
-             filter(Day >= 8) %>%
-             dplyr::select(c('State','Day','Beta'))
-
-start_filter<-covid_us_st %>%
-              filter(Beta > 0.1) %>%
-              dplyr::select(c('State','Day')) %>%
-              mutate(Dummy = 1)
-
-covid_us_st<-covid_us_st %>%
-             left_join(.,start_filter, by =c('State' = 'State',
-                                             'Day' = 'Day')) %>%
-             filter(!is.na(Dummy)) %>%
-             dplyr::select(-c('Dummy'))
-
-# Initial state values 
-init = rep(0,4)
-names(init) <- c('S',"E",'I','R')
-
-init[1] = 1
-init[2] = 0.001
-init[3] = 0
-init[4] = 0
-
-# Parameter values
-param = rep(0,4)
-names(param) <- c('mu','beta','sigma','gamma')
-param[1] = 0
-param[2] = 1/3
-param[3] = 1/5.2 
-param[4] = 1/10 
-
-horizon = 365
-
-for (i in 1:nrow(covid_us_st)){
+for (k in 1:2){
   
-  day<-covid_us_st$Day[i]
-  state<-covid_us_st$State[i]
-  pop<-covid_init$Population[covid_init$State == state]
-  param[2]<-covid_us_st$Beta[i]
-  init[2]<-covid_init$Init[covid_init$State == state]
-  
-  simulated<-seir_simulate(init,param,horizon) %>%
-             dplyr::select(c('t','I')) %>%
-             mutate(I = round(I,4),
-                    State = state,
-                    Day = day) %>%
-             dplyr::select(c('State','Day','t','I')) %>%
-             setNames(c('State','Day','Sim_Day','Infected'))
-  
-  if(i == 1){
-    covid_sim<-simulated
+  if(k == 1){
+    covid_data<-covid %>% dplyr::rename(State = Country)
   }else{
-    covid_sim<-rbind(covid_sim,simulated)
+    covid_data<-covid_us_st
   }
+  
+  covid_init <- covid_data %>%
+                filter(Day == 1) %>%
+                mutate(Init = 2.4*Cases_Percent) %>%
+                dplyr::select(c('State','Init','Population'))
+  
+  covid_data<-covid_data %>%
+              filter(State %in% (covid_data %>% 
+                                   group_by(State) %>%
+                                   summarise(n = n()) %>%
+                                   filter(n >= 10) %>%
+                                   dplyr::select(c('State')) %>%
+                                   unlist())) %>%
+              filter(Day >= 4) %>%
+              dplyr::select(c('State','Day','Beta'))
+  
+  start_filter<-covid_data %>%
+                filter(Beta > 0.1) %>%
+                dplyr::select(c('State','Day')) %>%
+                mutate(Dummy = 1)
+  
+  covid_data<-covid_data %>%
+              left_join(.,start_filter, by =c('State' = 'State',
+                                              'Day' = 'Day')) %>%
+              filter(!is.na(Dummy)) %>%
+              dplyr::select(-c('Dummy'))
+  
+  # Initial state values 
+  init = rep(0,4)
+  names(init) <- c('S',"E",'I','R')
+  
+  init[1] = 1
+  init[2] = 0.001
+  init[3] = 0
+  init[4] = 0
+  
+  # Parameter values
+  param = rep(0,4)
+  names(param) <- c('mu','beta','sigma','gamma')
+  param[1] = 0
+  param[2] = 1/3
+  param[3] = 1/5.2 
+  param[4] = 1/10 
+  
+  horizon = 365
+  
+  for (i in 1:nrow(covid_data)){
+    
+    day<-covid_data$Day[i]
+    state<-covid_data$State[i]
+    pop<-covid_init$Population[covid_init$State == state]
+    param[2]<-covid_data$Beta[i]
+    init[2]<-covid_init$Init[covid_init$State == state]
+    
+    simulated<-seir_simulate(init,param,horizon) %>%
+                dplyr::select(c('t','I')) %>%
+                mutate(I = round(I,4),
+                       State = state,
+                       Day = day) %>%
+                dplyr::select(c('State','Day','t','I')) %>%
+                setNames(c('State','Day','Sim_Day','Infected'))
+    
+    if(i == 1){
+      covid_sim<-simulated
+    }else{
+      covid_sim<-rbind(covid_sim,simulated)
+    }
+  }
+  
+  rm(init,param,day,state,pop,simulated,horizon,i,
+     covid_init,start_filter)
+  
+  filter_sim <- covid_sim %>% 
+                group_by(State,Day) %>% 
+                summarise(max_inf = max(Infected)) %>% 
+                filter(max_inf > 0) %>% 
+                mutate(Dummy = 1)
+  
+  covid_sim <- covid_sim %>%
+                left_join(.,filter_sim, by = c('State' = 'State',
+                                               'Day' = 'Day')) %>%
+                filter(!is.na(Dummy)) %>%
+                dplyr::select(-c('Dummy','max_inf'))
+  
+  if(k == 2) covid_us_st_sim<-covid_sim
 }
 
-rm(init,param,day,state,pop,simulated,horizon,i,
-   covid_init,start_filter)
-
-filter_sim <- covid_sim %>% 
-              group_by(State,Day) %>% 
-              summarise(max_inf = max(Infected)) %>% 
-              filter(max_inf > 0) %>% 
-              mutate(Dummy = 1)
-
-covid_sim <- covid_sim %>%
-             left_join(.,filter_sim, by = c('State' = 'State',
-                                            'Day' = 'Day')) %>%
-             filter(!is.na(Dummy)) %>%
-             dplyr::select(-c('Dummy','max_inf'))
+rm(k,filter_sim)
 
 ######################################################################################
 # Visualization
