@@ -194,17 +194,14 @@ for (k in 1:2){
     
     covid_data<-covid_data %>% filter(State %in% unique(covid_data$State))
   }
-  
-  if (k !=1) next
-  
+
   states <- covid_data %>% distinct(State) %>% unlist()
   
   for (i in 1:length(states)){
     
     print(paste0(states[i],"...",i,' of ',length(states)))
     
-    sub_covid <- covid_data %>% 
-                 filter(State == states[i])
+    sub_covid <- covid_data %>% filter(State == states[i])
     
     # Initial state values 
     init = rep(0,4)
@@ -263,28 +260,43 @@ for (k in 1:2){
                   setNames(c('Day','Actual','Simulated','State','Beta')) %>%
                   dplyr::select(c('State','Day','Beta','Actual','Simulated'))
       
-      if(j == 1 & i == 1){
-        beta <- cal_data
+      if(j == 1){
+        sub_beta <- cal_data
       }else{
-        beta <- rbind(beta,cal_data)
+        sub_beta <- rbind(sub_beta,cal_data)
+      }
+    }
+    
+    for(j in 1:length(days)){
+      
+      # normalized rmse calculation
+      sub_data<-sub_beta %>%
+                filter(Day <= j) %>%
+                group_by(State,Beta) %>%
+                summarise(rmse = rmse(Actual,Simulated)/mean(Actual,na.rm = TRUE)) %>%
+                mutate(Day = days[j]) %>%
+                dplyr::select(c('State','Day','Beta','rmse'))
+      
+      if(j == 1){
+        beta_update<-sub_data
+      }else{
+        beta_update<-rbind(beta_update,sub_data)
       }
     }
     
     if(i == 1){
       covid_data_updt<-sub_covid
+      beta<-beta_update
     }else{
       covid_data_updt<-rbind(covid_data_updt,sub_covid)
+      beta<-rbind(beta,beta_update)
     }
   }
   
   covid_data <- covid_data_updt
   
   beta <- beta %>%
-          rowwise() %>%
-          mutate(rmse = rmse(Actual,Simulated)) %>%
-          arrange(State,Day,Beta)
-  
-  beta <- beta %>%
+          arrange(State,Day,Beta) %>%
           left_join(.,(beta %>%
                          group_by(State,Day) %>%
                          summarise(min_rmse = min(rmse,na.rm = TRUE))),
@@ -311,8 +323,8 @@ for (k in 1:2){
   
 }
 
-rm(cal_data,seir,simulated,actual,select,
-   sub_covid,beta_pool,i,j,k,states,
+rm(cal_data,seir,simulated,actual,select,sub_data,
+   sub_covid,beta_pool,i,j,k,states,beta_update,sub_beta,
    sim_infected,sim_recovered,
    days,param,init,beta,covid_data,covid_data_updt)
 
