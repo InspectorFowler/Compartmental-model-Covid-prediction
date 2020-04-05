@@ -22,6 +22,7 @@ options(scipen=999)
 ######################################################################################
 
 setwd('C:/Users/Parikshit_verma/Documents/GitHub/Covid-19/')
+point_rmse = TRUE
 
 ######################################################################################
 # Functions
@@ -266,20 +267,27 @@ for (k in 1:2){
       }
     }
     
-    for(j in 1:length(days)){
+    if(point_rmse){
       
-      # normalized rmse calculation
-      sub_data<-sub_beta %>%
-                filter(Day <= j) %>%
-                group_by(State,Beta) %>%
-                summarise(rmse = rmse(Actual,Simulated)/mean(Actual,na.rm = TRUE)) %>%
-                mutate(Day = days[j]) %>%
-                dplyr::select(c('State','Day','Beta','rmse'))
+      # rmse for point comparison is APE
+      beta_update<-sub_beta %>% mutate(rmse = abs(1-(Simulated/Actual))) 
+    }else{
       
-      if(j == 1){
-        beta_update<-sub_data
-      }else{
-        beta_update<-rbind(beta_update,sub_data)
+      for(j in 1:length(days)){
+        
+        # normalized rmse calculation
+        sub_data<-sub_beta %>%
+                  filter(Day <= j) %>%
+                  group_by(State,Beta) %>%
+                  summarise(rmse = rmse(Actual,Simulated)/mean(Actual,na.rm = TRUE)) %>%
+                  mutate(Day = days[j]) %>%
+                  dplyr::select(c('State','Day','Beta','rmse'))
+        
+        if(j == 1){
+          beta_update<-sub_data
+        }else{
+          beta_update<-rbind(beta_update,sub_data)
+        }
       }
     }
     
@@ -295,16 +303,8 @@ for (k in 1:2){
   covid_data <- covid_data_updt
   
   beta <- beta %>%
-          arrange(State,Day,Beta) %>%
-          left_join(.,(beta %>%
-                         group_by(State,Day) %>%
-                         summarise(min_rmse = min(rmse,na.rm = TRUE))),
-                    by = c('State' = 'State',
-                           'Day' = 'Day')) %>%
-          mutate(min_flag = ifelse(min_rmse == rmse,1,0)) %>%
-          filter(min_flag == 1) %>%
-          group_by(State,Day) %>%
-          summarise(Beta = min(Beta,na.rm = TRUE))
+          group_by(State,Day) %>% slice(which.min(rmse)) %>%
+          dplyr::select(-c('rmse'))
   
   covid_data <- covid_data %>%
                 left_join(.,beta,by = c('State' = 'State', 'Day' = 'Day'))

@@ -194,7 +194,7 @@ covid_sim<-covid_us_st_sim
 
 # ------------------------------ Animate -------------------------------------
 
-region = 'Texas'
+region = 'New York'
 
 covid_sim %>%
 filter(Region == region) %>%
