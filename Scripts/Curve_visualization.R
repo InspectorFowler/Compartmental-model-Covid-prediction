@@ -127,15 +127,15 @@ for (k in 1:2){
     
     simulated<-seir_simulate(init,param,horizon) %>%
                dplyr::select(c('t','I')) %>%
-               mutate(I = round(I,4),
+               mutate(I = round(I,10),
                       State = state,
                       Day = day) %>%
                dplyr::select(c('State','Day','t','I')) %>%
-               setNames(c('State','Day','Sim_Day','Infected')) %>%
+               setNames(c('State','Day','Sim_Day','Sim_Infected')) %>%
                left_join(.,date_map, by = c('State' = 'State',
                                             'Sim_Day' = 'Horizon')) %>%
-               dplyr::rename(Sim_date = Horizon_date) %>%
-               dplyr::select(c('State','Day','Sim_date','Infected'))
+               dplyr::rename(Sim_Date = Horizon_date) %>%
+               dplyr::select(c('State','Day','Sim_Date','Sim_Day','Sim_Infected'))
     
     if(i == 1){
       covid_sim<-simulated
@@ -149,7 +149,7 @@ for (k in 1:2){
   
   filter_sim <- covid_sim %>% 
                 group_by(State,Day) %>% 
-                summarise(max_inf = max(Infected)) %>% 
+                summarise(max_inf = max(Sim_Infected)) %>% 
                 filter(max_inf > 0) %>% 
                 mutate(Dummy = 1)
   
@@ -161,29 +161,45 @@ for (k in 1:2){
                dplyr::rename(Region = State)
     
   if(k == 1){
-    covid_global_sim<-covid_sim
+    covid_global_sim<-covid_sim %>%
+                      left_join(.,covid, by = c('Region' = 'Country',
+                                                'Day' = 'Day')) %>%
+                      mutate(Sim_Cases = round(Population*Sim_Infected,0),
+                             Infected = Cases_Percent,
+                             Flag = ifelse(Sim_Day == Day,'Y','N')) %>%
+                      dplyr::select(c('Region','Date','Day','Sim_Date','Sim_Day','Flag',
+                                      'Beta','Cases','Sim_Cases','Infected','Sim_Infected',
+                                      'Population'))
   }else{
-    covid_us_st_sim<-covid_sim
+    covid_us_st_sim<-covid_sim %>%
+                     left_join(.,covid_us_st, by = c('Region' = 'State',
+                                                     'Day' = 'Day')) %>%
+                     mutate(Sim_Cases = round(Population*Sim_Infected,0),
+                            Infected = Cases_Percent,
+                            Flag = ifelse(Sim_Day == Day,'Y','N')) %>%
+                     dplyr::select(c('Region','Date','Day','Sim_Date','Sim_Day','Flag',
+                                     'Beta','Cases','Sim_Cases','Infected','Sim_Infected',
+                                     'Population'))
   } 
 }
-
+  
 rm(k,filter_sim,covid_sim,date_map,
-   covid_data,covid_us_st,covid)
+   covid_us_st,covid,covid_data)
 
 ######################################################################################
 # Visualization
 ######################################################################################
 
-covid_sim<-covid_global_sim
+covid_sim<-covid_us_st_sim
 
 # ------------------------------ Animate -------------------------------------
 
-region = 'US'
+region = 'Texas'
 
 covid_sim %>%
 filter(Region == region) %>%
-plot_ly(x = ~Sim_date,
-        y = ~Infected,
+plot_ly(x = ~Sim_Date,
+        y = ~Sim_Infected,
         frame = ~Day,
         type = 'scatter',
         mode = 'lines',

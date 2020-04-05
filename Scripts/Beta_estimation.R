@@ -79,7 +79,7 @@ covid_us_st<-covid_us_cn %>%
              group_by(Date,State) %>%
              summarise(Cases = sum(Cases, na.rm = TRUE),
                        Death = sum(Death, na.rm = TRUE),
-                       Population = max(Population, na.rm = TRUE)) %>%
+                       Population = sum(Population, na.rm = TRUE)) %>%
              as.data.frame() 
              
 # ---------------------------- Global Data --------------------------------------------
@@ -219,9 +219,8 @@ for (k in 1:2){
     param[3] = 1/5.2 
     param[4] = 1/10 
     
-    beta_pool = c(seq(0.001,1,0.002),
-                  seq(1,2,0.025),
-                  seq(2,5,0.05),
+    beta_pool = c(seq(0,2,0.001),
+                  seq(2,5,0.025),
                   seq(5,20,0.5))
     
     #Re-adjust data with initial parameters
@@ -317,10 +316,8 @@ for (k in 1:2){
            dplyr::select(c("Date","Day","Country","Cases","Death",
                            "Population","Cases_Percent","Death_Percent",'Beta'))
   }else{
-    
     covid_us_st<-covid_data
   }
-  
 }
 
 rm(cal_data,seir,simulated,actual,select,sub_data,
