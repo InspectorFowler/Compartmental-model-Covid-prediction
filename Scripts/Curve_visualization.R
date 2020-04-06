@@ -126,16 +126,17 @@ for (k in 1:2){
     init[2]<-covid_init$Init[covid_init$State == state]
     
     simulated<-seir_simulate(init,param,horizon) %>%
-               dplyr::select(c('t','I')) %>%
+               dplyr::select(c('t','I','R')) %>%
                mutate(I = round(I,10),
+                      R = round(R,10),
                       State = state,
                       Day = day) %>%
-               dplyr::select(c('State','Day','t','I')) %>%
-               setNames(c('State','Day','Sim_Day','Sim_Infected')) %>%
+               dplyr::select(c('State','Day','t','I','R')) %>%
+               setNames(c('State','Day','Sim_Day','Sim_Infected','Sim_Recovered')) %>%
                left_join(.,date_map, by = c('State' = 'State',
                                             'Sim_Day' = 'Horizon')) %>%
                dplyr::rename(Sim_Date = Horizon_date) %>%
-               dplyr::select(c('State','Day','Sim_Date','Sim_Day','Sim_Infected'))
+               dplyr::select(c('State','Day','Sim_Date','Sim_Day','Sim_Infected','Sim_Recovered'))
     
     if(i == 1){
       covid_sim<-simulated
@@ -144,8 +145,7 @@ for (k in 1:2){
     }
   }
   
-  rm(init,param,day,state,pop,simulated,horizon,i,
-     covid_init,start_filter)
+  rm(init,param,day,state,pop,simulated,horizon,i,covid_init,start_filter)
   
   filter_sim <- covid_sim %>% 
                 group_by(State,Day) %>% 
@@ -164,7 +164,7 @@ for (k in 1:2){
     covid_global_sim<-covid_sim %>%
                       left_join(.,covid, by = c('Region' = 'Country',
                                                 'Day' = 'Day')) %>%
-                      mutate(Sim_Cases = round(Population*Sim_Infected,0),
+                      mutate(Sim_Cases = round(Population*(Sim_Recovered+Sim_Infected),0),
                              Infected = Cases_Percent,
                              Flag = ifelse(Sim_Day == Day,'Y','N')) %>%
                       dplyr::select(c('Region','Date','Day','Sim_Date','Sim_Day','Flag',
@@ -174,7 +174,7 @@ for (k in 1:2){
     covid_us_st_sim<-covid_sim %>%
                      left_join(.,covid_us_st, by = c('Region' = 'State',
                                                      'Day' = 'Day')) %>%
-                     mutate(Sim_Cases = round(Population*Sim_Infected,0),
+                     mutate(Sim_Cases = round(Population*(Sim_Recovered+Sim_Infected),0),
                             Infected = Cases_Percent,
                             Flag = ifelse(Sim_Day == Day,'Y','N')) %>%
                      dplyr::select(c('Region','Date','Day','Sim_Date','Sim_Day','Flag',
@@ -183,8 +183,7 @@ for (k in 1:2){
   } 
 }
   
-rm(k,filter_sim,covid_sim,date_map,
-   covid_us_st,covid,covid_data)
+rm(k,filter_sim,covid_sim,date_map,covid_us_st,covid,covid_data)
 
 ######################################################################################
 # Visualization
@@ -194,7 +193,7 @@ covid_sim<-covid_us_st_sim
 
 # ------------------------------ Animate -------------------------------------
 
-region = 'New York'
+region = 'Washington'
 
 covid_sim %>%
 filter(Region == region) %>%
@@ -212,7 +211,6 @@ layout(title = paste0('Covid Curve Progression : ', region),
                               as.numeric(as.POSIXct("2020-12-31", format="%Y-%m-%d"))*1000),
                     tickformat =  "%d %b %Y"),  
        yaxis = list(title = '% of Population',
-                    range = c(0,0.5),
                     tickformat = "%"),
        shapes = list(hline()))
 
@@ -226,17 +224,35 @@ left_join(.,covid_sim %>%
                                       'Day' = 'max_day')) %>%
 filter(!is.na(Dummy)) %>%
 dplyr::select(-c('Dummy')) %>%
-plot_ly(x = ~Sim_Day,
-        y = ~Infected,
+plot_ly(x = ~Sim_Date,
+        y = ~Sim_Infected,
         color = ~Region,
         type = 'scatter',
         mode = 'lines',
         fill = 'tozeroy') %>% 
-layout(title = 'Covid Curve Progression by region',
+layout(title = 'Covid Curve Progression by Region',
        xaxis = list(title = 'Days',
                     type = 'date',
+                    range = c(as.numeric(as.POSIXct("2020-01-01", format="%Y-%m-%d"))*1000,
+                              as.numeric(as.POSIXct("2020-12-31", format="%Y-%m-%d"))*1000),
                     tickformat =  "%d %B %Y"), 
        yaxis = list(title = 'Population %',
                     range = c(0,0.8),
                     tickformat = "%"),
        shapes = list(hline()))
+
+# ------------------------------ Beta -------------------------------------
+
+region = 'Washington'
+
+covid_sim %>% 
+filter(Region == region & Flag == 'Y') %>%
+plot_ly(x = ~Date,
+        y = ~Beta,
+        type = 'scatter',
+        mode = 'lines') %>%
+layout(title = paste0('Beta Curve Progression : ', region),
+       xaxis = list(title = 'Date',
+                    type = 'date',
+                    tickformat =  "%d %B %Y"), 
+       yaxis = list(title = 'Beta'))

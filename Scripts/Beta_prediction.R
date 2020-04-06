@@ -84,16 +84,16 @@ accuracy_check <- function(model,init,train_data,test_data){
   
 }
 
-
 ######################################################################################
 # Read data
 ######################################################################################
 
 covid_us_st<-read.csv('Output/Estimation/US_state_beta.csv',stringsAsFactors = FALSE)
 
-pop<-read.csv('Input/Population/US_state_population.csv',stringsAsFactors = FALSE) %>%
-     dplyr::select(c('NAME','POPESTIMATE2019')) %>%
-     setNames(c('State','Population'))
+pop<-read.csv('Input/Population/US_population.csv',stringsAsFactors = FALSE) %>%
+     group_by(state) %>%
+     summarise(Population = sum(population, na.rm = TRUE)) %>%
+     dplyr::select(c('State','Population'))
 
 st_age<-read.csv('Input/Demographics/State_agegroup.csv',stringsAsFactors = FALSE) %>%
         setNames(c("State","Child_0_18","Adults_19_25","Adults_26_34","Adults_35_54","Adults_55_64","Adults_65" ))
