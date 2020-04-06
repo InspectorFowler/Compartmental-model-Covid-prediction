@@ -18,7 +18,7 @@ seir_fit <- function(beta,case0,pred_day){
   param[4] = 1/10
   
   seir_data<-seir_simulate(init,param,100)
-  val_fit<-seir_data[pred_day+1,'I']
+  val_fit<-seir_data[pred_day+1,'I'] + seir_data[pred_day+1,'R']
   
   return(as.numeric(val_fit))
 }
