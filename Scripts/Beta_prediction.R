@@ -181,7 +181,6 @@ if(split_type != 'Byrow'){
 
 lm_model <- lm(Beta ~ Day + 
                       Beta_lag1 + Beta_lag2 + Beta_lag3 + Beta_lag4 + 
-                      I(Beta_lag1^2) + I(Beta_lag2^2) + I(Beta_lag3^2) + I(Beta_lag4^2) +
                       Beta_lag1*Beta_lag2 + Beta_lag1*Beta_lag3 + Beta_lag1*Beta_lag4 +
                       Beta_lag2*Beta_lag3 + Beta_lag2*Beta_lag4 +
                       Beta_lag3*Beta_lag4 +
@@ -272,7 +271,7 @@ for (i in 1:nrow(states)){
 
 states<-unique(covid_us_st$State)
 horizon = 50
-model<-rf_model
+model<-lm_model
 
 for (i in 1:length(states)){
   

@@ -243,7 +243,7 @@ layout(title = 'Covid Curve Progression by Region',
 
 # ------------------------------ Beta -------------------------------------
 
-region = 'Washington'
+region = 'Illinois'
 
 covid_sim %>% 
 filter(Region == region & Flag == 'Y') %>%
@@ -256,3 +256,10 @@ layout(title = paste0('Beta Curve Progression : ', region),
                     type = 'date',
                     tickformat =  "%d %B %Y"), 
        yaxis = list(title = 'Beta'))
+
+######################################################################################
+# Write to file
+######################################################################################
+
+write.csv(covid_global_sim,'Output/Visualization/Global_viz.csv',row.names = FALSE)
+write.csv(covid_us_st_sim,'Output/Visualization/US_state_viz.csv',row.names = FALSE)
