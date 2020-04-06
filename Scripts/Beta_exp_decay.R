@@ -71,31 +71,53 @@ covid<-read.csv('Output/Estimation/Global_beta.csv',stringsAsFactors = FALSE)
 # Forecast
 ######################################################################################
 
-states<-unique(covid_us_st$State)
-horizon = 150
-filter = 7
-
-for (i in 1:length(states)){
+for (k in 1:2){
   
-  print(paste0(states[i],'...',i,' of ',length(states)))
-  
-  covid_sub<-covid_us_st %>%
-             filter(State == states[i] & Day != 0 & Beta != 0) %>%
-             dplyr::select(c('State','Day','Beta'))
-  
-  if(nrow(covid_sub) > filter) covid_sub<-covid_sub %>% dplyr::slice((nrow(.)-filter):nrow(.)) 
-  
-  covid_sub<-rbind(covid_sub,edecay_predict(covid_sub,horizon))
-  
-  if(i == 1){
-    beta_fcst<-covid_sub
+  if(k == 1){
+    covid_data<-covid %>% dplyr::rename(State = Country)
   }else{
-    beta_fcst<-rbind(beta_fcst,covid_sub)
+    covid_data<-covid_us_st
+  } 
+  
+  states<-unique(covid_data$State)
+  horizon = 150
+  filter = 7
+  
+  for (i in 1:length(states)){
+    
+    print(paste0(states[i],'...',i,' of ',length(states)))
+    
+    covid_sub<-covid_data %>%
+               filter(State == states[i] & Day != 0 & Beta != 0) %>%
+               dplyr::select(c('State','Day','Beta'))
+
+    if(nrow(covid_sub) == 0) next
+    
+    if(nrow(covid_sub) > filter) covid_sub<-covid_sub %>% dplyr::slice((nrow(.)-filter):nrow(.)) 
+    
+    covid_sub<-edecay_predict(covid_sub,horizon)
+    
+    if(i == 1){
+      beta_fcst<-covid_sub
+    }else{
+      beta_fcst<-rbind(beta_fcst,covid_sub)
+    }
   }
+  
+  if(k == 1){
+    beta_global_fcst<-beta_fcst %>%
+                      dplyr::rename(Country = State)
+  }else{
+    beta_us_fcst<-beta_fcst
+  } 
 }
+
+rm(beta_fcst,covid_data,covid_sub,
+   filter,horizon,i,k,states)
 
 ######################################################################################
 # Write to file
 ######################################################################################
 
-write.csv(beta_fcst,'Output/Prediction/Beta_prediction.csv',row.names = FALSE)
+write.csv(beta_global_fcst,'Output/Prediction/Beta_global_prediction.csv',row.names = FALSE)
+write.csv(beta_us_fcst,'Output/Prediction/Beta_US_state_prediction.csv',row.names = FALSE)

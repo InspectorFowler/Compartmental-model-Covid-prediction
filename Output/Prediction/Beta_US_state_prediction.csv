@@ -1,12 +1,4 @@
 "State","Day","Beta"
-"Alabama",5,0.842
-"Alabama",6,0.499
-"Alabama",7,0.37
-"Alabama",8,0.288
-"Alabama",9,0.304
-"Alabama",10,0.345
-"Alabama",11,0.313
-"Alabama",12,0.297
 "Alabama",13,0.305164086506721
 "Alabama",14,0.305099959047416
 "Alabama",15,0.305078129924534
@@ -158,14 +150,6 @@
 "Alabama",161,0.305066864455342
 "Alabama",162,0.305066864455342
 "Alabama",163,0.305066864455342
-"Alaska",5,1.288
-"Alaska",6,0.815
-"Alaska",7,0.517
-"Alaska",8,0.429
-"Alaska",9,0.361
-"Alaska",10,0.329
-"Alaska",11,0.304
-"Alaska",12,0.284
 "Alaska",13,0.290417854563781
 "Alaska",14,0.288175843978815
 "Alaska",15,0.28703329682063
@@ -317,14 +301,6 @@
 "Alaska",161,0.285845977645769
 "Alaska",162,0.285845977645769
 "Alaska",163,0.285845977645769
-"Arizona",9,1.288
-"Arizona",10,1.206
-"Arizona",11,1.044
-"Arizona",12,0.972
-"Arizona",13,0.882
-"Arizona",14,0.817
-"Arizona",15,0.766
-"Arizona",16,0.727
 "Arizona",17,0.680283638698108
 "Arizona",18,0.646941884901311
 "Arizona",19,0.618858640273511
@@ -476,14 +452,6 @@
 "Arizona",165,0.468879130213024
 "Arizona",166,0.468879130212714
 "Arizona",167,0.468879130212453
-"Arkansas",6,0.172
-"Arkansas",7,0.156
-"Arkansas",8,0.154
-"Arkansas",9,0.166
-"Arkansas",10,0.169
-"Arkansas",11,0.172
-"Arkansas",12,0.16
-"Arkansas",13,0.176
 "Arkansas",14,0.171085550166879
 "Arkansas",15,0.172439045521635
 "Arkansas",16,0.173813211835425
@@ -635,14 +603,6 @@
 "Arkansas",162,0.917616311800616
 "Arkansas",163,0.930371033423286
 "Arkansas",164,0.943320548716462
-"California",26,0.694
-"California",27,0.693
-"California",28,0.681
-"California",29,0.669
-"California",30,0.658
-"California",31,0.643
-"California",32,0.623
-"California",33,0.619
 "California",34,0.912540804183096
 "California",35,0.912572765369389
 "California",36,0.912604727628457
@@ -794,14 +754,6 @@
 "California",182,0.917282748484027
 "California",183,0.917314868833319
 "California",184,0.917346990260728
-"Colorado",17,0.831
-"Colorado",18,0.739
-"Colorado",19,0.752
-"Colorado",20,0.682
-"Colorado",21,0.656
-"Colorado",22,0.634
-"Colorado",23,0.614
-"Colorado",24,0.61
 "Colorado",25,0.593996708034282
 "Colorado",26,0.585283150185868
 "Colorado",27,0.578385337057025
@@ -953,14 +905,6 @@
 "Colorado",173,0.552181308788298
 "Colorado",174,0.552181308788298
 "Colorado",175,0.552181308788298
-"Connecticut",12,1.233
-"Connecticut",13,1.203
-"Connecticut",14,1.141
-"Connecticut",15,1.055
-"Connecticut",16,0.958
-"Connecticut",17,0.957
-"Connecticut",18,0.884
-"Connecticut",19,0.823
 "Connecticut",20,0.767633868650951
 "Connecticut",21,0.713163601073276
 "Connecticut",22,0.659884426491276
@@ -1112,14 +1056,6 @@
 "Connecticut",168,-1.62889821717716
 "Connecticut",169,-1.63096388480925
 "Connecticut",170,-1.6329843828037
-"Delaware",4,1.301
-"Delaware",5,0.653
-"Delaware",6,0.571
-"Delaware",7,0.484
-"Delaware",8,0.367
-"Delaware",9,0.355
-"Delaware",10,0.446
-"Delaware",11,0.426
 "Delaware",12,0.412186950915982
 "Delaware",13,0.412112471939887
 "Delaware",14,0.412088248579584
@@ -1271,14 +1207,6 @@
 "Delaware",160,0.412076572845935
 "Delaware",161,0.412076572845935
 "Delaware",162,0.412076572845935
-"District of Columbia",10,0.563
-"District of Columbia",11,0.541
-"District of Columbia",12,0.56
-"District of Columbia",13,0.552
-"District of Columbia",14,0.517
-"District of Columbia",15,0.508
-"District of Columbia",16,0.512
-"District of Columbia",17,0.49
 "District of Columbia",18,0.487913851147441
 "District of Columbia",19,0.478672502814485
 "District of Columbia",20,0.469586251572269
@@ -1430,14 +1358,6 @@
 "District of Columbia",166,-0.017749482299104
 "District of Columbia",167,-0.0185043079856014
 "District of Columbia",168,-0.0192464654700385
-"Florida",22,1.252
-"Florida",23,1.236
-"Florida",24,1.207
-"Florida",25,1.127
-"Florida",26,1.121
-"Florida",27,1.081
-"Florida",28,1.041
-"Florida",29,0.994
 "Florida",30,0.974776104414551
 "Florida",31,0.941423328756741
 "Florida",32,0.908853704518598
@@ -1589,14 +1509,6 @@
 "Florida",178,-0.403462313671702
 "Florida",179,-0.404452884011458
 "Florida",180,-0.405420194920699
-"Georgia",18,1.068
-"Georgia",19,0.983
-"Georgia",20,1.012
-"Georgia",21,0.979
-"Georgia",22,0.943
-"Georgia",23,0.894
-"Georgia",24,0.843
-"Georgia",25,0.804
 "Georgia",26,0.796403153598392
 "Georgia",27,0.764945929411924
 "Georgia",28,0.734172079535781
@@ -1748,10 +1660,6 @@
 "Georgia",174,-0.595527744074771
 "Georgia",175,-0.596746768870917
 "Georgia",176,-0.597939311666478
-"Hawaii",10,19.5
-"Hawaii",11,7
-"Hawaii",12,3.15
-"Hawaii",13,1.748
 "Hawaii",14,1.39548498252005
 "Hawaii",15,1.2667065619633
 "Hawaii",16,1.22564342342023
@@ -1903,14 +1811,6 @@
 "Hawaii",162,1.20642007592254
 "Hawaii",163,1.20642007592254
 "Hawaii",164,1.20642007592254
-"Idaho",4,1.75
-"Idaho",5,1.069
-"Idaho",6,1.348
-"Idaho",7,0.945
-"Idaho",8,1.012
-"Idaho",9,0.869
-"Idaho",10,0.775
-"Idaho",11,0.652
 "Idaho",12,0.701611225879901
 "Idaho",13,0.679477308043075
 "Idaho",14,0.663321630015341
@@ -2062,14 +1962,6 @@
 "Idaho",160,0.619662302040745
 "Idaho",161,0.619662302040745
 "Idaho",162,0.619662302040745
-"Illinois",13,1.248
-"Illinois",14,1.118
-"Illinois",15,1.057
-"Illinois",16,0.999
-"Illinois",17,0.926
-"Illinois",18,0.886
-"Illinois",19,0.853
-"Illinois",20,0.803
 "Illinois",21,0.785199111444878
 "Illinois",22,0.762888451012125
 "Illinois",23,0.744378201056212
@@ -2221,14 +2113,6 @@
 "Illinois",169,0.654222320390751
 "Illinois",170,0.654222320390729
 "Illinois",171,0.654222320390711
-"Indiana",14,1.566
-"Indiana",15,1.449
-"Indiana",16,1.369
-"Indiana",17,1.293
-"Indiana",18,1.228
-"Indiana",19,1.154
-"Indiana",20,1.097
-"Indiana",21,1.037
 "Indiana",22,0.992738143833574
 "Indiana",23,0.948805277753883
 "Indiana",24,0.90904813446015
@@ -2380,14 +2264,6 @@
 "Indiana",170,0.530519724148175
 "Indiana",171,0.530519707422508
 "Indiana",172,0.530519692286579
-"Iowa",5,1.032
-"Iowa",6,0.906
-"Iowa",7,0.743
-"Iowa",8,0.588
-"Iowa",9,0.515
-"Iowa",10,0.48
-"Iowa",11,0.45
-"Iowa",12,0.42
 "Iowa",13,0.383957689451901
 "Iowa",14,0.366274676687293
 "Iowa",15,0.353133357660006
@@ -2539,14 +2415,6 @@
 "Iowa",161,0.315109158811502
 "Iowa",162,0.315109158811502
 "Iowa",163,0.315109158811502
-"Kansas",17,0.989
-"Kansas",18,0.932
-"Kansas",19,0.896
-"Kansas",20,0.851
-"Kansas",21,0.819
-"Kansas",22,0.79
-"Kansas",23,0.758
-"Kansas",24,0.723
 "Kansas",25,0.702213937656382
 "Kansas",26,0.679178795483736
 "Kansas",27,0.658139009034344
@@ -2698,14 +2566,6 @@
 "Kansas",173,0.436287931337147
 "Kansas",174,0.436287896770711
 "Kansas",175,0.436287865198498
-"Kentucky",14,0.879
-"Kentucky",15,0.804
-"Kentucky",16,0.824
-"Kentucky",17,0.735
-"Kentucky",18,0.73
-"Kentucky",19,0.66
-"Kentucky",20,0.654
-"Kentucky",21,0.612
 "Kentucky",22,0.580295818626737
 "Kentucky",23,0.549586687799664
 "Kentucky",24,0.520003944130537
@@ -2857,14 +2717,6 @@
 "Kentucky",170,-0.253620629836804
 "Kentucky",171,-0.253742350566293
 "Kentucky",172,-0.253859606673604
-"Louisiana",16,1.028
-"Louisiana",17,0.966
-"Louisiana",18,0.97
-"Louisiana",19,0.951
-"Louisiana",20,0.989
-"Louisiana",21,0.941
-"Louisiana",22,0.924
-"Louisiana",23,0.864
 "Louisiana",24,0.882655405185113
 "Louisiana",25,0.867255013886438
 "Louisiana",26,0.852146331494981
@@ -3016,14 +2868,6 @@
 "Louisiana",172,0.117579605346984
 "Louisiana",173,0.116671016313645
 "Louisiana",174,0.115779637460807
-"Maine",3,4.175
-"Maine",4,0.828
-"Maine",5,0.33
-"Maine",6,0.057
-"Maine",7,0.196
-"Maine",8,0.217
-"Maine",9,0.178
-"Maine",10,0.143
 "Maine",11,0.162864162793761
 "Maine",12,0.162862055609461
 "Maine",13,0.162861701834778
@@ -3175,14 +3019,6 @@
 "Maine",159,0.162861630455834
 "Maine",160,0.162861630455834
 "Maine",161,0.162861630455834
-"Maryland",11,0.988
-"Maryland",12,0.896
-"Maryland",13,0.845
-"Maryland",14,0.815
-"Maryland",15,0.782
-"Maryland",16,0.759
-"Maryland",17,0.723
-"Maryland",18,0.701
 "Maryland",19,0.69562838278292
 "Maryland",20,0.684994943944043
 "Maryland",21,0.676596231968353
@@ -3334,14 +3170,6 @@
 "Maryland",167,0.6450315857413
 "Maryland",168,0.6450315857413
 "Maryland",169,0.6450315857413
-"Massachusetts",10,1.285
-"Massachusetts",11,1.144
-"Massachusetts",12,1.035
-"Massachusetts",13,0.962
-"Massachusetts",14,0.901
-"Massachusetts",15,0.853
-"Massachusetts",16,0.802
-"Massachusetts",17,0.737
 "Massachusetts",18,0.724066237291361
 "Massachusetts",19,0.698958249354546
 "Massachusetts",20,0.67843726296224
@@ -3493,14 +3321,6 @@
 "Massachusetts",166,0.586632000106553
 "Massachusetts",167,0.58663200010655
 "Massachusetts",168,0.586632000106548
-"Michigan",12,1.963
-"Michigan",13,1.767
-"Michigan",14,1.607
-"Michigan",15,1.509
-"Michigan",16,1.397
-"Michigan",17,1.315
-"Michigan",18,1.22
-"Michigan",19,1.137
 "Michigan",20,1.09197331053373
 "Michigan",21,1.04212229437178
 "Michigan",22,0.999493443289359
@@ -3652,14 +3472,6 @@
 "Michigan",168,0.747876521718326
 "Michigan",169,0.747876521713981
 "Michigan",170,0.747876521710264
-"Minnesota",9,0.42
-"Minnesota",10,0.405
-"Minnesota",11,0.369
-"Minnesota",12,0.346
-"Minnesota",13,0.323
-"Minnesota",14,0.3
-"Minnesota",15,0.294
-"Minnesota",16,0.285
 "Minnesota",17,0.269284616789427
 "Minnesota",18,0.25972624990544
 "Minnesota",19,0.251477086300213
@@ -3811,14 +3623,6 @@
 "Minnesota",165,0.199499901963217
 "Minnesota",166,0.199499901959964
 "Minnesota",167,0.199499901957157
-"Mississippi",11,1.22
-"Mississippi",12,1.075
-"Mississippi",13,0.962
-"Mississippi",14,0.894
-"Mississippi",15,0.82
-"Mississippi",16,0.782
-"Mississippi",17,0.722
-"Mississippi",18,0.69
 "Mississippi",19,0.669131414173507
 "Mississippi",20,0.64900269700191
 "Mississippi",21,0.633155021271891
@@ -3970,14 +3774,6 @@
 "Mississippi",167,0.574489663911734
 "Mississippi",168,0.574489663911734
 "Mississippi",169,0.574489663911734
-"Missouri",12,2.075
-"Missouri",13,1.825
-"Missouri",14,1.732
-"Missouri",15,1.6
-"Missouri",16,1.473
-"Missouri",17,1.297
-"Missouri",18,1.253
-"Missouri",19,1.13
 "Missouri",20,1.05135617981889
 "Missouri",21,0.973954911035054
 "Missouri",22,0.90394888842676
@@ -4129,14 +3925,6 @@
 "Missouri",168,0.241247339054257
 "Missouri",169,0.241247311885358
 "Missouri",170,0.24124728731229
-"Montana",3,3.125
-"Montana",4,0.61
-"Montana",5,0.349
-"Montana",6,0.143
-"Montana",7,0.182
-"Montana",8,0.097
-"Montana",9,0.105
-"Montana",10,0.108
 "Montana",11,0.140128549845469
 "Montana",12,0.140126711257377
 "Montana",13,0.140126396157059
@@ -4288,13 +4076,6 @@
 "Montana",159,0.14012633098541
 "Montana",160,0.14012633098541
 "Montana",161,0.14012633098541
-"Nebraska",3,4.225
-"Nebraska",4,1.324
-"Nebraska",5,0.873
-"Nebraska",6,0.653
-"Nebraska",7,0.519
-"Nebraska",8,0.467
-"Nebraska",9,0.428
 "Nebraska",10,0.518082629127065
 "Nebraska",11,0.517954084257171
 "Nebraska",12,0.517923244967626
@@ -4446,14 +4227,6 @@
 "Nebraska",158,0.517913511012039
 "Nebraska",159,0.517913511012039
 "Nebraska",160,0.517913511012039
-"Nevada",14,0.868
-"Nevada",15,0.798
-"Nevada",16,0.742
-"Nevada",17,0.713
-"Nevada",18,0.687
-"Nevada",19,0.633
-"Nevada",20,0.619
-"Nevada",21,0.585
 "Nevada",22,0.570296922331028
 "Nevada",23,0.553206008430237
 "Nevada",24,0.538566344725381
@@ -4605,14 +4378,6 @@
 "Nevada",170,0.451133509956468
 "Nevada",171,0.451133509954553
 "Nevada",172,0.451133509952913
-"New Hampshire",7,0.135
-"New Hampshire",8,0.394
-"New Hampshire",9,0.372
-"New Hampshire",10,0.279
-"New Hampshire",11,0.159
-"New Hampshire",12,0.308
-"New Hampshire",13,0.308
-"New Hampshire",14,0.317
 "New Hampshire",15,0.314959324269813
 "New Hampshire",16,0.327875316404157
 "New Hampshire",17,0.34103400728668
@@ -4764,14 +4529,6 @@
 "New Hampshire",163,10.4358369607271
 "New Hampshire",164,10.6389299293799
 "New Hampshire",165,10.8458391290076
-"New Jersey",20,1.897
-"New Jersey",21,1.816
-"New Jersey",22,1.7
-"New Jersey",23,1.623
-"New Jersey",24,1.543
-"New Jersey",25,1.477
-"New Jersey",26,1.411
-"New Jersey",27,1.341
 "New Jersey",28,1.28761721938619
 "New Jersey",29,1.23501503856343
 "New Jersey",30,1.18647199761845
@@ -4923,14 +4680,6 @@
 "New Jersey",176,0.60595301336075
 "New Jersey",177,0.605952650916134
 "New Jersey",178,0.605952316440195
-"New Mexico",5,0.747
-"New Mexico",6,0.294
-"New Mexico",7,0.463
-"New Mexico",8,0.362
-"New Mexico",9,0.349
-"New Mexico",10,0.471
-"New Mexico",11,0.373
-"New Mexico",12,0.418
 "New Mexico",13,0.432290407033944
 "New Mexico",14,0.432290405196412
 "New Mexico",15,0.432290404969383
@@ -5082,14 +4831,6 @@
 "New Mexico",161,0.432290404937379
 "New Mexico",162,0.432290404937379
 "New Mexico",163,0.432290404937379
-"New York",16,1.44
-"New York",17,1.324
-"New York",18,1.238
-"New York",19,1.153
-"New York",20,1.08
-"New York",21,1.021
-"New York",22,0.968
-"New York",23,0.915
 "New York",24,0.876608593190987
 "New York",25,0.840724541810801
 "New York",26,0.809461728642481
@@ -5241,14 +4982,6 @@
 "New York",172,0.597967873399251
 "New York",173,0.597967873349862
 "New York",174,0.597967873306833
-"North Carolina",5,0.636
-"North Carolina",6,0.395
-"North Carolina",7,0.375
-"North Carolina",8,0.307
-"North Carolina",9,0.33
-"North Carolina",10,0.327
-"North Carolina",11,0.31
-"North Carolina",12,0.282
 "North Carolina",13,0.311584622528153
 "North Carolina",14,0.311563237988493
 "North Carolina",15,0.311556500786596
@@ -5400,14 +5133,6 @@
 "North Carolina",161,0.311553401937499
 "North Carolina",162,0.311553401937499
 "North Carolina",163,0.311553401937499
-"North Dakota",3,3.45
-"North Dakota",4,0.719
-"North Dakota",5,0.317
-"North Dakota",6,0.287
-"North Dakota",7,0.246
-"North Dakota",8,0.208
-"North Dakota",9,0.183
-"North Dakota",10,0.19
 "North Dakota",11,0.221360494988315
 "North Dakota",12,0.221359488527286
 "North Dakota",13,0.2213593304726
@@ -5559,14 +5284,6 @@
 "North Dakota",159,0.221359301027649
 "North Dakota",160,0.221359301027649
 "North Dakota",161,0.221359301027649
-"Ohio",10,1.055
-"Ohio",11,0.959
-"Ohio",12,0.87
-"Ohio",13,0.814
-"Ohio",14,0.762
-"Ohio",15,0.722
-"Ohio",16,0.685
-"Ohio",17,0.639
 "Ohio",18,0.622590210556981
 "Ohio",19,0.601592496026517
 "Ohio",20,0.584203533881825
@@ -5718,14 +5435,6 @@
 "Ohio",166,0.500413910171035
 "Ohio",167,0.50041391017102
 "Ohio",168,0.500413910171006
-"Oklahoma",11,0.853
-"Oklahoma",12,0.771
-"Oklahoma",13,0.738
-"Oklahoma",14,0.75
-"Oklahoma",15,0.743
-"Oklahoma",16,0.702
-"Oklahoma",17,0.684
-"Oklahoma",18,0.641
 "Oklahoma",19,0.643295047197459
 "Oklahoma",20,0.629154997956382
 "Oklahoma",21,0.616410753074376
@@ -5877,14 +5586,6 @@
 "Oklahoma",167,0.500050795600856
 "Oklahoma",168,0.500050792648271
 "Oklahoma",169,0.500050789987144
-"Oregon",15,0.62
-"Oregon",16,0.585
-"Oregon",17,0.567
-"Oregon",18,0.532
-"Oregon",19,0.517
-"Oregon",20,0.496
-"Oregon",21,0.457
-"Oregon",22,0.463
 "Oregon",23,0.43888515697249
 "Oregon",24,0.424320408778014
 "Oregon",25,0.411041743012955
@@ -6036,14 +5737,6 @@
 "Oregon",171,0.27394110465785
 "Oregon",172,0.273941088011505
 "Oregon",173,0.27394107283505
-"Pennsylvania",12,1.285
-"Pennsylvania",13,1.203
-"Pennsylvania",14,1.13
-"Pennsylvania",15,1.08
-"Pennsylvania",16,1.038
-"Pennsylvania",17,0.991
-"Pennsylvania",18,0.966
-"Pennsylvania",19,0.909
 "Pennsylvania",20,0.893359652460809
 "Pennsylvania",21,0.869467752733563
 "Pennsylvania",22,0.84879838655462
@@ -6195,13 +5888,6 @@
 "Pennsylvania",168,0.716224841063833
 "Pennsylvania",169,0.716224841052203
 "Pennsylvania",170,0.716224841042142
-"Rhode Island",3,6.5
-"Rhode Island",4,2.125
-"Rhode Island",5,1.124
-"Rhode Island",6,0.792
-"Rhode Island",7,0.551
-"Rhode Island",8,0.476
-"Rhode Island",9,0.443
 "Rhode Island",10,0.5288172892709
 "Rhode Island",11,0.528187078550841
 "Rhode Island",12,0.528008332107214
@@ -6353,14 +6039,6 @@
 "Rhode Island",158,0.527937561743362
 "Rhode Island",159,0.527937561743362
 "Rhode Island",160,0.527937561743362
-"South Carolina",14,0.999
-"South Carolina",15,0.956
-"South Carolina",16,0.91
-"South Carolina",17,0.881
-"South Carolina",18,0.86
-"South Carolina",19,0.808
-"South Carolina",20,0.773
-"South Carolina",21,0.728
 "South Carolina",22,0.707531254598517
 "South Carolina",23,0.674374347487408
 "South Carolina",24,0.64198458761105
@@ -6512,14 +6190,6 @@
 "South Carolina",170,-0.680705662306721
 "South Carolina",171,-0.681743104583167
 "South Carolina",172,-0.682756543686731
-"South Dakota",19,0.326
-"South Dakota",20,0.327
-"South Dakota",21,0.317
-"South Dakota",22,0.331
-"South Dakota",23,0.358
-"South Dakota",24,0.359
-"South Dakota",25,0.36
-"South Dakota",26,0.361
 "South Dakota",27,0.373930055325916
 "South Dakota",28,0.381587468108034
 "South Dakota",29,0.389453035133031
@@ -6671,14 +6341,6 @@
 "South Dakota",175,15.009166450135
 "South Dakota",176,15.4146588285635
 "South Dakota",177,15.8311738541218
-"Tennessee",10,0.858
-"Tennessee",11,0.759
-"Tennessee",12,0.758
-"Tennessee",13,0.749
-"Tennessee",14,0.627
-"Tennessee",15,0.577
-"Tennessee",16,0.539
-"Tennessee",17,0.512
 "Tennessee",18,0.466406933165764
 "Tennessee",19,0.421689145043938
 "Tennessee",20,0.377778837228015
@@ -6830,14 +6492,6 @@
 "Tennessee",166,-1.84308996737465
 "Tennessee",167,-1.84610459122884
 "Tennessee",168,-1.84906477926467
-"Texas",13,1.165
-"Texas",14,1.062
-"Texas",15,1.018
-"Texas",16,0.955
-"Texas",17,0.911
-"Texas",18,0.863
-"Texas",19,0.826
-"Texas",20,0.782
 "Texas",21,0.758449109543073
 "Texas",22,0.732389424906803
 "Texas",23,0.709572548011163
@@ -6989,14 +6643,6 @@
 "Texas",169,0.549029613937083
 "Texas",170,0.549029613862188
 "Texas",171,0.549029613796613
-"Utah",8,0.785
-"Utah",9,0.664
-"Utah",10,0.579
-"Utah",11,0.46
-"Utah",12,0.485
-"Utah",13,0.473
-"Utah",14,0.462
-"Utah",15,0.446
 "Utah",16,0.443423897655981
 "Utah",17,0.441355519387338
 "Utah",18,0.44014099205346
@@ -7148,14 +6794,6 @@
 "Utah",164,0.438413434484948
 "Utah",165,0.438413434484948
 "Utah",166,0.438413434484948
-"Vermont",11,0.923
-"Vermont",12,0.811
-"Vermont",13,0.756
-"Vermont",14,0.692
-"Vermont",15,0.624
-"Vermont",16,0.605
-"Vermont",17,0.599
-"Vermont",18,0.574
 "Vermont",19,0.560001400397438
 "Vermont",20,0.550871696638949
 "Vermont",21,0.544139596791257
@@ -7307,14 +6945,6 @@
 "Vermont",167,0.525236904751438
 "Vermont",168,0.525236904751438
 "Vermont",169,0.525236904751438
-"Virginia",16,0.73
-"Virginia",17,0.701
-"Virginia",18,0.7
-"Virginia",19,0.69
-"Virginia",20,0.671
-"Virginia",21,0.662
-"Virginia",22,0.658
-"Virginia",23,0.632
 "Virginia",24,0.627341344731131
 "Virginia",25,0.616126463010763
 "Virginia",26,0.605115647005274
@@ -7466,14 +7096,6 @@
 "Virginia",172,0.0516930719620207
 "Virginia",173,0.0509526722050747
 "Virginia",174,0.0502257447440892
-"Washington",30,0.799
-"Washington",31,0.775
-"Washington",32,0.753
-"Washington",33,0.722
-"Washington",34,0.709
-"Washington",35,0.688
-"Washington",36,0.667
-"Washington",37,0.65
 "Washington",38,0.633397608416634
 "Washington",39,0.617682111254667
 "Washington",40,0.602880863685847
@@ -7625,11 +7247,6 @@
 "Washington",186,0.363293952259076
 "Washington",187,0.363291744673918
 "Washington",188,0.363289665515103
-"West Virginia",3,2.05
-"West Virginia",4,0.356
-"West Virginia",5,0.086
-"West Virginia",6,0.172
-"West Virginia",7,0.194
 "West Virginia",8,0.148480739125573
 "West Virginia",9,0.148462880985379
 "West Virginia",10,0.148461079701282
@@ -7781,14 +7398,6 @@
 "West Virginia",156,0.148460877630317
 "West Virginia",157,0.148460877630317
 "West Virginia",158,0.148460877630317
-"Wisconsin",11,0.646
-"Wisconsin",12,0.561
-"Wisconsin",13,0.54
-"Wisconsin",14,0.506
-"Wisconsin",15,0.486
-"Wisconsin",16,0.48
-"Wisconsin",17,0.433
-"Wisconsin",18,0.43
 "Wisconsin",19,0.425464920322962
 "Wisconsin",20,0.418591281966812
 "Wisconsin",21,0.413291257566499

@@ -44,6 +44,9 @@ hline <- function(y = 0.25, color = "red"){
 covid_us_st<-read.csv('Output/Estimation/US_state_beta.csv',stringsAsFactors = FALSE)
 covid<-read.csv('Output/Estimation/Global_beta.csv',stringsAsFactors = FALSE)
 
+beta_global_fcst<-read.csv('Output/Prediction/Beta_global_prediction.csv',stringsAsFactors = FALSE)
+beta_us_fcst<-read.csv('Output/Prediction/Beta_US_state_prediction.csv',stringsAsFactors = FALSE)
+
 ######################################################################################
 # SEIR Simulate
 ######################################################################################
@@ -51,10 +54,14 @@ covid<-read.csv('Output/Estimation/Global_beta.csv',stringsAsFactors = FALSE)
 for (k in 1:2){
   
   if(k == 1){
+    
     covid_data<-covid %>% dplyr::rename(State = Country)
+    beta_pred<-beta_global_fcst %>% dplyr::rename(State = Country) %>% mutate(Type = 'Forecast')
     print('Simulating SEIR model for global data...')
   }else{
+    
     covid_data<-covid_us_st
+    beta_pred<-beta_us_fcst %>% mutate(Type = 'Forecast')
     print('Simulating SEIR model for US data...')
   }
   
@@ -116,6 +123,12 @@ for (k in 1:2){
                                               'Day' = 'Day')) %>%
               filter(!is.na(Dummy)) %>%
               dplyr::select(-c('Dummy'))
+  
+  covid_data<-covid_data %>%
+              mutate(Type = 'Actual') %>%
+              rbind(beta_pred) %>%
+              arrange(State,Day) %>%
+              mutate(Beta = ifelse(Beta<0,0,Beta))
   
   for (i in 1:nrow(covid_data)){
     
