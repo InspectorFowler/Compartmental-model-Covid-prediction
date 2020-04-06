@@ -14,9 +14,8 @@ suppressMessages(library(caret)) # rmse and metrics
 suppressMessages(library(leaps)) # stepwise regression
 suppressMessages(library(ridge)) # rmse and metrics
 suppressMessages(library(e1071)) # svm
-suppressMessages(library(forecast)) # time series
-suppressMessages(library(smooth)) # RF
-suppressMessages(library(randomForest)) # RF
+suppressMessages(library(xgboost)) # Xgboost
+suppressMessages(library(randomForest)) # Random forest
 
 
 # !diagnostics off
@@ -26,7 +25,7 @@ options(scipen=999)
 #Working directory and environment
 ######################################################################################
 
-setwd('C:/Users/Parikshit_verma/Desktop/Covid-19')
+setwd('C:/Users/Parikshit_verma/Documents/GitHub/Covid-19')
 
 ######################################################################################
 # Functions
@@ -40,9 +39,12 @@ accuracy_check <- function(model,init,train_data,test_data){
   
   summary(model)
   
+  train_data<-train_data %>% mutate(Type = 'Train')
+  test_data<-test_data %>% mutate(Type = 'Test')
+
   data <- rbind(train_data,test_data) %>%
           mutate(Beta_pred = predict(model,.)) %>%
-          dplyr::select('Day','State','CPM','Beta','Beta_pred') %>%
+          dplyr::select('Type','Day','State','CPM','Beta','Beta_pred') %>%
           left_join(.,init, by = c('State' = 'State')) %>%
           mutate(CPM_pred = 0)
   
@@ -55,32 +57,26 @@ accuracy_check <- function(model,init,train_data,test_data){
           mutate(Cases = round(CPM*Population/1000000,0),
                  Cases_pred = round(CPM_pred*Population/1000000,0),
                  Beta_pred = round(Beta_pred,4)) %>%
-          dplyr::select(c('Day','State',
+          dplyr::select(c('Type','Day','State',
                           'Cases','Cases_pred',
                           'CPM','CPM_pred',
                           'Beta','Beta_pred'))
   
-  rows = nrow(data[data$State != 'Texas',])
-  beta_test_scale = max(data[data$State == 'Texas','Beta']) - min(data[data$State == 'Texas','Beta'])
-  beta_train_scale = max(data[data$State != 'Texas','Beta']) - min(data[data$State != 'Texas','Beta'])
-  case_test_scale = max(data[data$State == 'Texas','Cases']) - min(data[data$State == 'Texas','Cases'])
-  case_train_scale = max(data[data$State != 'Texas','Cases']) - min(data[data$State != 'Texas','Cases'])
-  
   # Train RMSE
-  print(paste0('Training mape (Beta) : ', round(MAPE(data.frame(cbind(pull(data[data$State != 'Texas','Beta']),
-                                                     pull(data[data$State != 'Texas','Beta_pred'])))),4)))
+  print(paste0('Training MAPE (Beta) : ', round(MAPE(data.frame(cbind(pull(data[data$Type == 'Train','Beta']),
+                                                     pull(data[data$Type == 'Train','Beta_pred'])))),4)))
   
   # Test RMSE
-  print(paste0('Testing mape (Beta) : ', round(MAPE(data.frame(cbind(pull(data[data$State == 'Texas','Beta']),
-                                                    pull(data[data$State == 'Texas','Beta_pred'])))),4)))
+  print(paste0('Testing MAPE (Beta) : ', round(MAPE(data.frame(cbind(pull(data[data$Type == 'Test','Beta']),
+                                                    pull(data[data$Type == 'Test','Beta_pred'])))),4)))
   
   # Train RMSE
-  print(paste0('Training mape (Cases) : ', round(MAPE(data.frame(cbind(pull(data[data$State != 'Texas','Cases']),
-                                                      pull(data[data$State != 'Texas','Cases_pred'])))),4)))
+  print(paste0('Training MAPE (Cases) : ', round(MAPE(data.frame(cbind(pull(data[data$Type == 'Train','Cases']),
+                                                      pull(data[data$Type == 'Train','Cases_pred'])))),4)))
   
   # Test RMSE
-  print(paste0('Testing mape (Cases) : ', round(MAPE(data.frame(cbind(pull(data[data$State == 'Texas','Cases']),
-                                                     pull(data[data$State == 'Texas','Cases_pred'])))),4)))
+  print(paste0('Testing MAPE (Cases) : ', round(MAPE(data.frame(cbind(pull(data[data$Type == 'Test','Cases']),
+                                                     pull(data[data$Type == 'Test','Cases_pred'])))),4)))
   
   return(data)
   
@@ -128,15 +124,7 @@ covid_us_st <- covid_us_st %>%
                dplyr::select(c('Day','State','CPM','DPM','Beta')) %>%
                arrange(State,Day) %>%
                group_by(State) %>%
-               mutate(CPM_lag1 = dplyr::lag(CPM, n = 1, default = NA),
-                      CPM_lag2 = dplyr::lag(CPM, n = 2, default = NA),
-                      CPM_lag3 = dplyr::lag(CPM, n = 3, default = NA),
-                      CPM_lag4 = dplyr::lag(CPM, n = 4, default = NA),
-                      DPM_lag1 = dplyr::lag(DPM, n = 1, default = NA),
-                      DPM_lag2 = dplyr::lag(DPM, n = 2, default = NA),
-                      DPM_lag3 = dplyr::lag(DPM, n = 3, default = NA),
-                      DPM_lag4 = dplyr::lag(DPM, n = 4, default = NA),
-                      Beta_lag1 = dplyr::lag(Beta, n = 1, default = NA),
+               mutate(Beta_lag1 = dplyr::lag(Beta, n = 1, default = NA),
                       Beta_lag2 = dplyr::lag(Beta, n = 2, default = NA),
                       Beta_lag3 = dplyr::lag(Beta, n = 3, default = NA),
                       Beta_lag4 = dplyr::lag(Beta, n = 4, default = NA))
@@ -148,20 +136,18 @@ features <- st_age %>%
             left_join(.,st_hospital, by = c('State' = 'State')) %>%
             left_join(.,st_homeless, by = c('State' = 'State')) %>%
             mutate(Homeless = round(HomlessPop*100/Population,4)) %>%
-            dplyr::select(-c('Population','Area','HomlessPop'))
-
+            dplyr::select(-c('Population','Area','HomlessPop')) %>%
+            mutate(Urban = Urban/100) %>%
+            mutate_at(.vars = vars(Beds,PopDensity,Hospitals),
+                      .funs = scale)
+            
 covid_us_st <- covid_us_st %>%
                left_join(.,features, by = c('State' = 'State')) %>%
-               mutate(Urban = Urban/100) %>%
                ungroup() %>%
-               drop_na()
+               drop_na() %>%
+               filter(Day >= 3)
 
-rm(features,st_age,st_homeless,st_hospital,st_popdensity,st_race,st_urban)
-
-covid_us_st <- covid_us_st %>%
-                mutate_at(.vars = vars(Beds,PopDensity,Hospitals),
-                          .funs = scale) %>%
-                filter(Day >= 3)
+rm(st_age,st_homeless,st_hospital,st_popdensity,st_race,st_urban)
 
 ######################################################################################
 # Data modeling - single point
@@ -222,18 +208,12 @@ rf_model <- randomForest(Beta ~ .,data = (covid_train %>% dplyr::select(-c('Stat
 
 model_output <- accuracy_check(rf_model,covid_init,covid_train,covid_test)
 
-# ------------------------------------ Neural Network ---------------------------------
+# ------------------------------------ Xgboost model -------------------------------------
 
-n<-names(covid_train)
-f <- as.formula(paste("Beta ~", paste(n[!n %in% "Beta"], collapse = " + ")))
+xgb_train <- xgb.DMatrix(data = data.matrix((covid_train %>% dplyr::select(-c('State','CPM','DPM')))), label = covid_train$Beta)
+xgb_model <- xgboost(data = xgb_train, nrounds = 20, verbose = 1) 
 
-nn <- neuralnet(f,data=covid_train,
-                hidden=10,
-                rep = 10,
-                threshold = 0.04,
-                stepmax = 1e7,
-                learningrate = 0.001,
-                linear.output=T)
+model_output <- accuracy_check(xgb_model,covid_init,covid_train,covid_test)
 
 ######################################################################################
 # Data modelling - multi point
@@ -290,4 +270,46 @@ for (i in 1:nrow(states)){
 # Forecast
 ######################################################################################
 
+states<-unique(covid_us_st$State)
+horizon = 50
+model<-rf_model
 
+for (i in 1:length(states)){
+  
+  print(paste0(states[i],'...',i,' of ',length(states)))
+  
+  sub_covid<-covid_us_st %>% 
+             filter(State == states[i]) %>% 
+             dplyr::select(c('Day','State','Beta')) 
+  
+  start_day<-min(sub_covid$Day)
+  sub_covid<-data.frame(seq(start_day,(start_day+horizon))) %>%
+             setNames(c('Day')) %>%
+             left_join(.,sub_covid, by = c('Day' = 'Day')) %>%
+             mutate(State = states[i],
+                    Beta_lag1 = dplyr::lag(Beta, n = 1, default = NA),
+                    Beta_lag2 = dplyr::lag(Beta, n = 2, default = NA),
+                    Beta_lag3 = dplyr::lag(Beta, n = 3, default = NA),
+                    Beta_lag4 = dplyr::lag(Beta, n = 4, default = NA)) %>%
+             filter(is.na(Beta)) %>%
+             left_join(.,features, by = c('State' = 'State'))
+  
+  for (j in 1:nrow(sub_covid)){
+    
+    beta_pred<-predict(model,sub_covid[j,])
+    sub_covid$Beta[j] = beta_pred
+    
+    if (j+4 <= nrow(sub_covid)) sub_covid$Beta_lag4[j+4] = beta_pred
+    if (j+3 <= nrow(sub_covid)) sub_covid$Beta_lag3[j+3] = beta_pred
+    if (j+2 <= nrow(sub_covid)) sub_covid$Beta_lag2[j+2] = beta_pred
+    if (j+1 <= nrow(sub_covid)) sub_covid$Beta_lag1[j+1] = beta_pred
+  }
+  
+  sub_covid<-sub_covid %>% dplyr::select(c('Day','State','Beta'))
+  
+  if(i == 1){
+    beta_fcst<-sub_covid
+  }else{
+    beta_fcst<-rbind(beta_fcst,sub_covid)
+  }
+}
