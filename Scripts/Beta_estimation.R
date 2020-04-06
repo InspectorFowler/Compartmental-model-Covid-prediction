@@ -313,10 +313,12 @@ for (k in 1:2){
     
     covid<-covid_data %>%
            mutate(Country = State) %>%
-           dplyr::select(c("Date","Day","Country","Cases","Death",
+           dplyr::select(c("Country","Date","Day","Cases","Death",
                            "Population","Cases_Percent","Death_Percent",'Beta'))
   }else{
-    covid_us_st<-covid_data
+    covid_us_st<-covid_data %>%
+                 dplyr::select(c("State","Date","Day","Cases","Death",
+                                 "Population","Cases_Percent","Death_Percent",'Beta'))
   }
 }
 
