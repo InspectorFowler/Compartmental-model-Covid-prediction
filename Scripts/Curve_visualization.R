@@ -19,6 +19,7 @@ options(scipen=999)
 #Working directory and environment
 ######################################################################################
 
+rm(list = ls())
 setwd('C:/Users/Parikshit_verma/Documents/GitHub/Covid-19/')
 
 ######################################################################################
@@ -208,6 +209,13 @@ rm(k,filter_sim,covid_sim,date_map,covid_us_st,covid,covid_data,
    beta_global_fcst,beta_us_fcst,beta_pred)
 
 ######################################################################################
+# Write to file
+######################################################################################
+
+write.csv(covid_global_sim,'Output/Visualization/Global_viz.csv',row.names = FALSE)
+write.csv(covid_us_st_sim,'Output/Visualization/US_state_viz.csv',row.names = FALSE)
+
+######################################################################################
 # Visualization
 ######################################################################################
 
@@ -279,10 +287,3 @@ layout(title = paste0('Beta Curve Progression : ', region),
                     type = 'date',
                     tickformat =  "%d %B %Y"), 
        yaxis = list(title = 'Beta'))
-
-######################################################################################
-# Write to file
-######################################################################################
-
-write.csv(covid_global_sim,'Output/Visualization/Global_viz.csv',row.names = FALSE)
-write.csv(covid_us_st_sim,'Output/Visualization/US_state_viz.csv',row.names = FALSE)

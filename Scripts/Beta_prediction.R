@@ -25,6 +25,7 @@ options(scipen=999)
 #Working directory and environment
 ######################################################################################
 
+rm(list = ls())
 setwd('C:/Users/Parikshit_verma/Documents/GitHub/Covid-19')
 
 ######################################################################################
